@@ -1,2 +1,2 @@
 # Py_Proj
-Scientific computing with Python Projects
+This repo contains the projects of the course "Scientific computing with Python".
