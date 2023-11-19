@@ -5,3 +5,6 @@ def add_time(start, duration):
 
 
     return new_time
+
+#Example
+#add_time("11:30 AM", "2:32", "Monday")
