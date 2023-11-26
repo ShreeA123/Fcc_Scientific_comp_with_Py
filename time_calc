@@ -6,7 +6,17 @@ def add_time(start, dur, start_day=""):
     if end == "PM":
         hour = int(time[0]) + 12
         time[0] = str(hour)
-    
+
+
+    time_duration = dur.split(":")
+    new_hour = int(time[0]) + int(time_duration[0])
+    new_min = int(time[1]) + int(time_duration[1])
+
+    if new_min >= 60:
+        add_hours = new_min // 60
+        new_min -= add_hours * 60
+        new_hour += add_hours
+
     
     
     return new_time
