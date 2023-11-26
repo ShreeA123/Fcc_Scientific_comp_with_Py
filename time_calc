@@ -1,10 +1,16 @@
-def add_time(start, duration):
+def add_time(start, dur, start_day=""):
+    fragments = start.split()
+    time = fragments[0].split(":")
+    end = fragments[1]
 
-
-
-
-
+    if end == "PM":
+        hour = int(time[0]) + 12
+        time[0] = str(hour)
+    
+    
+    
     return new_time
+
 
 #Example
 #add_time("11:30 AM", "2:32", "Monday")
