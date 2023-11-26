@@ -39,7 +39,18 @@ def add_time(start, dur, start_day=""):
             nxt_days = " (next day)"
         else:
             nxt_days = " (" + str(add_days) + " days later)"
-
+    week = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+    day = ""
+    if start_day:
+        weeks = add_days // 7
+        i = week.index(start_day.lower().capitalize()) + (add_days - 7 * weeks)
+        if i > 6:
+            i -= 7
+        day = ", " + week[i]
+    
+    new_time = str(new_hour) + ":" + \
+        (str(new_min) if new_min > 9 else ("0" + str(new_min))) + \
+        " " + end + day + nxt_days
    
     
     return new_time
