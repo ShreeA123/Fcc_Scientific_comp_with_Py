@@ -17,7 +17,30 @@ def add_time(start, dur, start_day=""):
         new_min -= add_hours * 60
         new_hour += add_hours
 
-    
+    add_days = 0
+    if new_hour >= 24:
+        add_days = new_hour // 24
+        new_hour -= add_days * 24
+
+    if new_hour > 0 and new_hour < 12:
+        end = "AM"
+    elif new_hour == 12:
+        end = "PM"
+    elif new_hour > 12:
+        end = "PM"
+        new_hour -= 12
+    else: 
+        end = "AM"
+        new_hour += 12
+
+    nxt_days = ""
+    if add_days > 0:
+        if add_days == 1:
+            nxt_days = " (next day)"
+        else:
+            nxt_days = " (" + str(add_days) + " days later)"
+
+   
     
     return new_time
 
