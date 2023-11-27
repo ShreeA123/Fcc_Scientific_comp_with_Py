@@ -1,0 +1,9 @@
+class Rectangle:
+
+ 
+    return max_width * max_height
+
+
+class Square(Rectangle):
+
+  
