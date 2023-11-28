@@ -13,6 +13,18 @@ class Hat:
             drawn.append(ball)
         return drawn
 
+class Hat:
+    def __init__(self, **balls):
+        self.contents = [color for color in balls for i in range(balls[color])]
+
+    def draw(self, num):
+        drawn = []
+        for _ in range(min(num, len(self.contents))):
+            ball = random.choice(self.contents)
+            self.contents.remove(ball)
+            drawn.append(ball)
+        return drawn
+
 def experiment(hat, expected_balls, num_balls_drawn, num_experiments):
     success_count = 0
     for _ in range(num_experiments):
@@ -22,4 +34,3 @@ def experiment(hat, expected_balls, num_balls_drawn, num_experiments):
         if success:
             success_count += 1
     return success_count / num_experiments
-
