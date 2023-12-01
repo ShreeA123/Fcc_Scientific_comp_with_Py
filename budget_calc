@@ -1,24 +1,35 @@
-import budget
-from budget import create_spend_chart
-from unittest import main
+class Category:
 
-food = budget.Category("Food")
-food.deposit(1000, "initial deposit")
-food.withdraw(10.15, "groceries")
-food.withdraw(15.89, "restaurant and more food for dessert")
-print(food.get_balance())
-clothing = budget.Category("Clothing")
-food.transfer(50, clothing)
-clothing.withdraw(25.55)
-clothing.withdraw(100)
-auto = budget.Category("Auto")
-auto.deposit(1000, "initial deposit")
-auto.withdraw(15)
+    def __init__(self, category):
+        self.category = category
+        self.ledger = []
 
-print(food)
-print(clothing)
+    def deposit(self, amount, description=''):
+        self.ledger.append({"amount": amount, "description": description})
 
-print(create_spend_chart([food, clothing, auto]))
+    def withdraw(self, amount, description=''):
+        if self.check_funds(amount):
+            self.ledger.append({"amount": -amount, "description": description})
+            return True
+        return False
 
-# Run unit tests automatically
-main(module='test_module', exit=False)
+    def get_balance(self):
+        return sum(item['amount'] for item in self.ledger)
+
+    def transfer(self, amount, category):
+        if self.check_funds(amount):
+            self.withdraw(amount, "Transfer to " + category.category)
+            category.deposit(amount, "Transfer from " + self.category)
+            return True
+        return False
+
+    def check_funds(self, amount):
+        return amount <= self.get_balance()
+
+    def __str__(self):
+        output = self.category.center(30, '*') + "\n"
+        for item in self.ledger:
+            output += f"{item['description'][:23].ljust(23)}{item['amount']:>7.2f}\n"
+        output += f"Total: {self.get_balance():.2f}"
+        return output
+
