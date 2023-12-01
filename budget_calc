@@ -1,60 +1,95 @@
 class Category:
 
-    def __init__(self, category):
-        self.category = category
-        self.ledger = []
+  def __init__(self, category):
+    self.category = category
+    self.ledger = []
 
-    def deposit(self, amount, description=''):
-        self.ledger.append({"amount": amount, "description": description})
 
-    def withdraw(self, amount, description=''):
-        if self.check_funds(amount):
-            self.ledger.append({"amount": -amount, "description": description})
-            return True
-        return False
+  def __str__(self):
+    s = self.category.center(30, "*") + "\n"
 
-    def get_balance(self):
-        return sum(item['amount'] for item in self.ledger)
+    for item in self.ledger:
+      temp = f"{item['description'][:23]:23}{item['amount']:7.2f}"
+      s += temp + "\n"
 
-    def transfer(self, amount, category):
-        if self.check_funds(amount):
-            self.withdraw(amount, "Transfer to " + category.category)
-            category.deposit(amount, "Transfer from " + self.category)
-            return True
-        return False
+    s += "Total: " + str(self.get_balance())
+    return s
 
-    def check_funds(self, amount):
-        return amount <= self.get_balance()
+  def deposit(self, amount, description=""):
+    temp = {}
+    temp['amount'] = amount
+    temp['description'] = description
+    self.ledger.append(temp)
 
-    def __str__(self):
-        output = self.category.center(30, '*') + "\n"
-        for item in self.ledger:
-            output += f"{item['description'][:23].ljust(23)}{item['amount']:>7.2f}\n"
-        output += f"Total: {self.get_balance():.2f}"
-        return output
+
+  def withdraw(self, amount, description=""):
+    if self.check_funds(amount):
+      temp = {}
+      temp['amount'] = 0 - amount
+      temp['description'] = description
+      self.ledger.append(temp)
+      return True
+    return False
+
+
+  def get_balance(self):
+    balance = 0
+    for item in self.ledger:
+      balance += item['amount']
+    return balance
+
+
+  def transfer(self, amount, budget_cat):
+    if self.check_funds(amount):
+      self.withdraw(amount, "Transfer to " + budget_cat.category)
+      budget_cat.deposit(amount, "Transfer from " + self.category)
+      return True
+    return False
+
+
+  def check_funds(self, amount):
+    if amount > self.get_balance():
+      return False
+    return True
+
+
 def create_spend_chart(categories):
-    spent = [sum(item['amount'] for item in cat.ledger if item['amount'] < 0) for cat in categories]
-    total_spent = sum(spent)
-    spent_percent = [int((s / total_spent) * 10) * 10 for s in spent]
+  spend = []
+  for category in categories:
+    temp = 0
+    for item in category.ledger:
+      if item['amount'] < 0:
+        temp += abs(item['amount'])
+    spend.append(temp)
+  
+  total = sum(spend)
+  percentage = [i/total * 100 for i in spend]
 
-    chart = "Percentage spent by category\n"
+  s = "Percentage spent by category"
+  for i in range(100, -1, -10):
+    s += "\n" + str(i).rjust(3) + "|"
+    for j in percentage:
+      if j > i:
+        s += " o "
+      else:
+        s += "   "
+    # Spaces
+    s += " "
+  s += "\n    ----------"
 
-    for i in range(100, -10, -10):
-        chart += str(i).rjust(3) + '|'
-        for percent in spent_percent:
-            chart += ' o ' if percent >= i else '   '
-        chart += ' \n'
+  cat_length = []
+  for category in categories:
+    cat_length.append(len(category.category))
+  max_length = max(cat_length)
 
-    chart += '    ' + '-' * (len(categories) * 3 + 1)
+  for i in range(max_length):
+    s += "\n    "
+    for j in range(len(categories)):
+      if i < cat_length[j]:
+        s += " " + categories[j].category[i] + " "
+      else:
+        s += "   "
+    # Spaces
+    s += " "
 
-    names = [c.category for c in categories]
-    max_len = max(len(name) for name in names)
-
-    for i in range(max_len):
-        chart += '\n     '
-        for name in names:
-            chart += name[i] + '  ' if i < len(name) else '   '
-
-    return chart
-
-
+  return s
